@@ -1,0 +1,46 @@
+{
+	"author": "Daisycon B.V.",
+	"bugs": {
+		"url": "https://github.com/DaisyconBV/daisycon-tracking/issues"
+	},
+	"description": "Daisycon JS tracking",
+	"dependencies": {},
+	"devDependencies": {
+		"@types/jest": "26.0.24",
+		"@types/jsdom": "^16.2.13",
+		"@types/node": "16.4.0",
+		"jest": "27.0.6",
+		"jsdom": "^16.6.0",
+		"ts-jest": "27.0.4",
+		"tslint": "6.1.3",
+		"typescript": "4.3.5"
+	},
+	"files": [
+		"lib/**/*"
+	],
+	"homepage": "https://github.com/DaisyconBV/daisycon-tracking#readme",
+	"keywords": [
+		"Daisycon",
+		"Tracking"
+	],
+	"license": "ISC",
+	"main": "lib/index.js",
+	"name": "@daisycon/tracking",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/DaisyconBV/daisycon-tracking.git"
+	},
+	"scripts": {
+		"prebuild": "node -p \"'export const LIB_VERSION: string = \\'' + require('./package.json').version + '\\';'\" > src/version.ts",
+		"build": "tsc",
+		"lint": "tslint -p tsconfig.json",
+		"postversion": "git push && git push --tags",
+		"prepare": "npm run build",
+		"prepublishOnly": "npm test && npm run lint",
+		"preversion": "npm run lint",
+		"test": "jest --config jestconfig.json",
+		"version": "npm run format && git add -A src"
+	},
+	"types": "lib/index.d.ts",
+	"version": "0.0.1"
+}
