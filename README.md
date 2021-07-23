@@ -1,5 +1,14 @@
 # Daisycon JS Tracking
 
+## Installation
+
+```text
+npm install @daisycon/tracking
+```
+
+## Usage
+
+### Storing incoming requests
 Every page general on load usage
 
 ```typescript
@@ -9,10 +18,13 @@ new TrackingService('dt51.net')
 	.storeData();
 ```
 
-Pixel usage await:
+
+### Registering sale/lead
+
+#### async await method
 
 ```typescript
-import {ConfigInterface, CurrencyEnum, Part, SuccessInterface, TrackingService, Transaction} from '@daisycon/tracking';
+import {CurrencyEnum, Part, SuccessInterface, TrackingService, Transaction} from '@daisycon/tracking';
 
 const transaction: Transaction = new Transaction({
 	campaignId: 475,
@@ -35,10 +47,10 @@ try {
 }
 ```
 
-Pixel usage promise:
+#### Regular promise method
 
 ```typescript
-import {ConfigInterface, CurrencyEnum, Part, SuccessInterface, TrackingService, Transaction} from '@daisycon/tracking';
+import {CurrencyEnum, Part, SuccessInterface, TrackingService, Transaction} from '@daisycon/tracking';
 
 const transaction: Transaction = new Transaction({
 	campaignId: 475,
@@ -56,7 +68,7 @@ new TrackingService('dt51.net')
 	.catch((errorResponse: any) => console.log('errorResponse', errorResponse))
 ```
 
-Alternate definitions:
+#### Alternate transaction definition
 
 ```typescript
 const myData = {
