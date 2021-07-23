@@ -10,7 +10,7 @@ declare const __dc_response: SuccessInterface;
 
 export class TrackingService {
 	constructor(
-		private trackingSegment: string = 'ds1.nl'
+		private trackingSegment: string = 'lt45.net'
 	) {}
 
 

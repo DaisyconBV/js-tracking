@@ -1,7 +1,7 @@
 {
 	"author": "Daisycon B.V.",
 	"bugs": {
-		"url": "https://github.com/DaisyconBV/daisycon-tracking/issues"
+		"url": "https://github.com/DaisyconBV/js-tracking/issues"
 	},
 	"description": "Daisycon JS tracking",
 	"dependencies": {},
@@ -19,7 +19,7 @@
 	"files": [
 		"lib/**/*"
 	],
-	"homepage": "https://github.com/DaisyconBV/daisycon-tracking#readme",
+	"homepage": "https://github.com/DaisyconBV/js-tracking#readme",
 	"keywords": [
 		"Daisycon",
 		"Tracking"
@@ -29,7 +29,7 @@
 	"name": "@daisycon/tracking",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/DaisyconBV/daisycon-tracking.git"
+		"url": "git+https://github.com/DaisyconBV/js-tracking.git"
 	},
 	"scripts": {
 		"prebuild": "node -p \"'export const LIB_VERSION: string = \\'' + require('./package.json').version + '\\';'\" > src/version.ts",
@@ -39,7 +39,7 @@
 		"prepare": "npm run build",
 		"prepublishOnly": "npm test && npm run lint",
 		"preversion": "npm run lint",
-		"test": "jest --config jestconfig.json"
+		"test": "jest --config jestconfig.json --verbose"
 	},
 	"types": "lib/index.d.ts",
 	"version": "0.0.3"

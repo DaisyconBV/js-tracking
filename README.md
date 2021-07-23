@@ -20,7 +20,7 @@ Add the following piece of code to the root of your app so that it loads on ever
 ```typescript
 import {TrackingService} from '@daisycon/tracking';
 
-new TrackingService('dt51.net')
+new TrackingService()
 	.storeData();
 ```
 
