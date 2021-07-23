@@ -284,6 +284,21 @@ describe('TrackingService: Store data', () => {
 		});
 	});
 
+	it('Should not do anything if no dci exists', () => {
+		expect(document.cookie).toBe('');
+		expect(sessionStorage.getItem(config.storageName)).toBe(null);
+		expect(localStorage.getItem(config.storageName)).toBe(null);
+
+		dom.reconfigure({url: 'https://www.example.com/?dci='})
+
+		new TrackingService()
+			.storeData();
+
+		expect(document.cookie).toBe('');
+		expect(sessionStorage.getItem(config.storageName)).toBe(null);
+		expect(localStorage.getItem(config.storageName)).toBe(null);
+	})
+
 	it('Should retrieve the dci from the URL and store it', () => {
 
 		expect(document.cookie).toBe('');
