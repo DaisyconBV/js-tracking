@@ -35,7 +35,7 @@ export class TrackingService {
 				const host: string = '//' + Math.round(+new Date() / 83000) + '.' + id + 'tat.' + className ;
 
 				const abScriptElement: HTMLScriptElement = document.createElement('script');
-				abScriptElement.src = host + '/js/?' + queryString;
+				abScriptElement.src = host + '/js/t/?' + queryString;
 
 				abScriptElement.onload = () => resolve(__dc_response || null);
 				abScriptElement.onerror = abScriptElement.oncancel = abScriptElement.oninvalid = abScriptElement.onabort = () => {

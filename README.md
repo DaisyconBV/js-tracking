@@ -12,7 +12,7 @@ yarn add @daisycon/tracking
 npm install @daisycon/tracking
 ```
 
-## Usage
+## Recommended usage (es6)
 
 ### Storing incoming requests
 Add the following piece of code to the root of your app so that it loads on every page and stores any received dci.
@@ -116,4 +116,86 @@ new TrackingService(segment)
 	.registerTransaction(transaction)
 	.then((successResponse: SuccessInterface) => console.log('successResponse', successResponse))
 	.catch((errorResponse: any) => console.log('errorResponse', errorResponse));
+```
+
+## Alternate usage (commonjs)
+
+### Storing incoming requests
+Add the following piece of code to the root of your app so that it loads on every page and stores any received dci.
+
+```typescript
+const daisycon = require('@daisycon/tracking');
+
+new daisycon.TrackingService()
+	.storeData();
+```
+
+### Registering sale/lead
+#### async await method
+
+```typescript
+const daisycon = require('@daisycon/tracking');
+const campaignId: number = 475;
+const segment: string = 'lt45.net';
+
+const transaction: daisycon.Transaction = new daisycon.Transaction({
+	campaignId: campaignId,
+	transactionId: 'AB374782388282',
+}).addPart(new daisycon.Part({
+	amount: 125,
+	revenue: 250,
+	currency: daisycon.CurrencyEnum.EUR,
+	externalDescription: 'Transaction for Campaign',
+}));
+
+try {
+	const successResponse: SuccessInterface = await new daisycon.TrackingService(segment)
+		.registerTransaction(transaction);
+
+	console.log('successResponse', successResponse);
+
+} catch (errorResponse: any) {
+	console.log('errorResponse', errorResponse);
+}
+```
+
+## Alternate usage manual import
+
+### Storing incoming requests
+Add the following piece of code to the root of your app so that it loads on every page and stores any received dci.
+
+```html
+<script src="/path/to/build/daisycon-bundle.min.js"
+```
+
+```javascript
+new daisycon()
+	.storeData();
+```
+
+### Registering sale/lead
+#### async await method
+
+```javascript
+const campaignId: number = 475;
+const segment: string = 'lt45.net';
+
+try {
+	const successResponse = new daisycon(segment)
+		.registerTransaction({
+			campaignId: campaignId,
+			transactionId: 'AB374782388282',
+			parts: [{
+				amount: 125,
+				revenue: 250,
+				currency: daisycon.CurrencyEnum.EUR,
+				externalDescription: 'Transaction for Campaign',
+			}]
+		});
+
+	console.log('successResponse', successResponse);
+
+} catch (errorResponse: any) {
+	console.log('errorResponse', errorResponse);
+}
 ```

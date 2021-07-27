@@ -200,7 +200,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		expect(scriptTags.length).toBe(2);
 
 		expect(scriptTags[1].src).toMatch(
-			new RegExp(`http\\://[0-9]{8}.newstat.net/js/\\?cdci=null&lsdci=null&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D&src=js_unittest`)
+			new RegExp(`http\\://[0-9]{8}.newstat.net/js/t/\\?cdci=null&lsdci=null&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D&src=js_unittest`)
 		);
 
 		expect.assertions(6);
