@@ -27,6 +27,6 @@ describe('Part toQueryString', () => {
 			extra5: 'Extra $5',
 		})
 		expect(part.toQueryString())
-			.toBe('p[]=%7Ba%3A1.01%7D%7Br%3A2.51%7D%7Bcurr%3AEUR%7D%7Bcc%3AcompensationCode%7D%7Bqty%3A4%7D%7Bsku%3AsomeSku%7D%7Bpn%3AExternal%20Description%7D%7Biv%3A%24%23%26C%40HC%5E%7D%7Be1%3AExtra%20%241%7D%7Be2%3AExtra%20%242%7D%7Be3%3AExtra%20%243%7D%7Be4%3AExtra%20%244%7D%7Be5%3AExtra%20%245%7D');
+			.toBe('p[]=%7Ba%3A1.01%7D%7Br%3A2.51%7D%7Bcur%3AEUR%7D%7Bcc%3AcompensationCode%7D%7Bqty%3A4%7D%7Bsku%3AsomeSku%7D%7Bpn%3AExternal%20Description%7D%7Biv%3A%24%23%26C%40HC%5E%7D%7Be1%3AExtra%20%241%7D%7Be2%3AExtra%20%242%7D%7Be3%3AExtra%20%243%7D%7Be4%3AExtra%20%244%7D%7Be5%3AExtra%20%245%7D');
 	});
 })

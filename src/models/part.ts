@@ -25,7 +25,7 @@ export class Part {
 				''
 				+ (this.amount              ? `{a:${this.amount}}`               : '')
 				+ (this.revenue             ? `{r:${this.revenue}}`              : '')
-				+ (this.currency            ? `{curr:${this.currency}}`          : '')
+				+ (this.currency            ? `{cur:${this.currency}}`          : '')
 				+ (this.compensationCode    ? `{cc:${this.compensationCode}}`    : '')
 				+ (this.quantity            ? `{qty:${this.quantity}}`           : '')
 				+ (this.sku                 ? `{sku:${this.sku}}`                : '')

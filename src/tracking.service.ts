@@ -9,10 +9,11 @@ import {SessionStorageService} from 'src/storage/session-storage.service';
 declare const __dc_response: SuccessInterface;
 
 export class TrackingService {
+	public src: string = '';
+
 	constructor(
 		private trackingSegment: string = 'lt45.net'
 	) {}
-
 
 	public registerTransaction(transaction: Transaction): Promise<SuccessInterface> {
 		return new Promise<SuccessInterface>((resolve: (response: SuccessInterface) => void, reject: (error: any) => void) => {
@@ -20,12 +21,12 @@ export class TrackingService {
 				throw new Error('Invalid campaign ID');
 			}
 
-			const cookieValue: string = new CookieService().get();
-			const storageValue: string = new SessionStorageService().get() || new LocalStorageService().get();
+			const cookieValue: string = new CookieService().get() || '';
+			const storageValue: string = new SessionStorageService().get() || new LocalStorageService().get() || '';
 			const queryString: string = `cdci=${encodeURIComponent(cookieValue)}`
 				+ `&lsdci=${encodeURIComponent(storageValue)}`
 				+ `&${transaction.toQueryString()}`
-				+ `&src=${encodeURIComponent(config.version)}`;
+				+ `&src=${encodeURIComponent(config.version + (this.src ? `__${this.src}` : ''))}`;
 
 			const primaryScriptElement: HTMLScriptElement = document.createElement('script');
 			primaryScriptElement.src = `https://${this.trackingSegment}/js/t/?${queryString}`;

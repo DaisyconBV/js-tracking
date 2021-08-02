@@ -28,6 +28,6 @@ describe('Transaction toQueryString', () => {
 			.addPart(new Part({amount: 1}))
 			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'EUR'}))
 			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'DKK'}));
-		expect(transaction.toQueryString()).toBe('ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D');
+		expect(transaction.toQueryString()).toBe('ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D');
 	});
 });

@@ -53,7 +53,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
 		expect(scriptTags.length).toBe(0);
 
-		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D';
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
 		const transaction: Transaction = new Transaction({
 			campaignId: 475,
 			transactionId: 123
@@ -70,7 +70,7 @@ describe('TrackingService: RegisterTransaction', () => {
 
 		expect(scriptTags.length).toBe(1);
 
-		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?cdci=null&lsdci=null&${expectedTransactionUrl}&src=js_unittest`);
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?cdci=&lsdci=&${expectedTransactionUrl}&src=js_unittest`);
 
 		expect.assertions(5);
 
@@ -86,7 +86,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
 		expect(scriptTags.length).toBe(0);
 
-		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D';
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
 		const transaction: Transaction = new Transaction({
 			campaignId: 475,
 			transactionId: 123
@@ -118,7 +118,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
 		expect(scriptTags.length).toBe(0);
 
-		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D';
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
 		const transaction: Transaction = new Transaction({
 			campaignId: 475,
 			transactionId: 123
@@ -149,7 +149,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
 		expect(scriptTags.length).toBe(0);
 
-		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D';
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
 		const transaction: Transaction = new Transaction({
 			campaignId: 475,
 			transactionId: 123
@@ -166,7 +166,7 @@ describe('TrackingService: RegisterTransaction', () => {
 
 		expect(scriptTags.length).toBe(1);
 
-		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?cdci=CookieDCI&lsdci=null&${expectedTransactionUrl}&src=js_unittest`);
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?cdci=CookieDCI&lsdci=&${expectedTransactionUrl}&src=js_unittest`);
 
 		expect.assertions(5);
 
@@ -178,7 +178,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
 		expect(scriptTags.length).toBe(0);
 
-		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D';
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
 		const transaction: Transaction = new Transaction({
 			campaignId: 475,
 			transactionId: 123
@@ -200,7 +200,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		expect(scriptTags.length).toBe(2);
 
 		expect(scriptTags[1].src).toMatch(
-			new RegExp(`http\\://[0-9]{8}.newstat.net/js/t/\\?cdci=null&lsdci=null&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D&src=js_unittest`)
+			new RegExp(`http\\://[0-9]{8}.newstat.net/js/t/\\?cdci=&lsdci=&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D&src=js_unittest`)
 		);
 
 		expect.assertions(6);
@@ -216,7 +216,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		expect(imageTags.length).toBe(0);
 
 
-		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D';
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
 		const transaction: Transaction = new Transaction({
 			campaignId: 475,
 			transactionId: 123
@@ -243,7 +243,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		expect(imageTags.length).toBe(1);
 
 		expect(imageTags[0].src).toMatch(
-			new RegExp(`http\\://[0-9]{8}.newstat.net/ab/\\?cdci=null&lsdci=null&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcurr%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcurr%3ADKK%7D&src=js_unittest`)
+			new RegExp(`http\\://[0-9]{8}.newstat.net/ab/\\?cdci=&lsdci=&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D&src=js_unittest`)
 		);
 
 		expect.assertions(9);
