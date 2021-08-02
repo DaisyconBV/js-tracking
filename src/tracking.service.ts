@@ -21,6 +21,9 @@ export class TrackingService {
 				throw new Error('Invalid campaign ID');
 			}
 
+			// Cast to object for compiled minified version where people can't create object themselves.
+			transaction = new Transaction(transaction);
+
 			const cookieValue: string = new CookieService().get() || '';
 			const storageValue: string = new SessionStorageService().get() || new LocalStorageService().get() || '';
 			const queryString: string = `cdci=${encodeURIComponent(cookieValue)}`

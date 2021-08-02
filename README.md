@@ -181,7 +181,7 @@ const campaignId: number = 475;
 const segment: string = 'lt45.net';
 
 try {
-	const successResponse = new daisycon(segment)
+	const successResponse = await new daisycon(segment)
 		.registerTransaction({
 			campaignId: campaignId,
 			transactionId: 'AB374782388282',
@@ -195,7 +195,7 @@ try {
 
 	console.log('successResponse', successResponse);
 
-} catch (errorResponse: any) {
+} catch (errorResponse) {
 	console.log('errorResponse', errorResponse);
 }
 ```
