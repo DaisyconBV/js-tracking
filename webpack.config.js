@@ -10,7 +10,7 @@ module.exports = {
 					loader: 'ts-loader',
 					options: {
 						context: __dirname,
-						configFile: path.resolve(__dirname, 'tsconfig-cjs.json'),
+						configFile: path.resolve(__dirname, 'tsconfig-build.json'),
 					}
 				},
 				exclude: /node_modules/
