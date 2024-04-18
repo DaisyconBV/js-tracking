@@ -13,3 +13,6 @@ export {TrackingStatusEnum} from 'src/response/tracking-status.enum';
 
 // Services
 export {TrackingService} from 'src/tracking.service';
+
+// Interfaces
+export {StorageServiceInterface} from 'src/storage/storage-service.interface';
