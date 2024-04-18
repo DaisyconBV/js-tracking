@@ -9,6 +9,10 @@ import {SessionStorageService} from 'src/storage/session-storage.service';
 declare const __dc_response: SuccessInterface;
 
 export class TrackingService {
+	protected cookieService: CookieService = new CookieService();
+	protected localStorageService: LocalStorageService = new LocalStorageService();
+	protected sessionStorageService: SessionStorageService = new SessionStorageService();
+
 	public src: string = '';
 
 	constructor(
@@ -24,8 +28,8 @@ export class TrackingService {
 			// Cast to object for compiled minified version where people can't create object themselves.
 			transaction = new Transaction(transaction);
 
-			const cookieValue: string = new CookieService().get() || '';
-			const storageValue: string = new SessionStorageService().get() || new LocalStorageService().get() || '';
+			const cookieValue: string = this.cookieService.get() || '';
+			const storageValue: string = this.sessionStorageService.get() || this.localStorageService.get() || '';
 			const queryString: string = `cdci=${encodeURIComponent(cookieValue)}`
 				+ `&lsdci=${encodeURIComponent(storageValue)}`
 				+ `&${transaction.toQueryString()}`
@@ -109,19 +113,19 @@ export class TrackingService {
 		}
 	}
 
-	public storeData(): void {
-		let location: URL = new URL(document.location.toString());
+	public storeData(fromUrl: string = null): void {
+		let location: URL = new URL(fromUrl || document.location.toString());
 		let dci: string = location.searchParams.get(config.param)
-			|| new SessionStorageService().get()
-			|| new LocalStorageService().get()
-			|| new CookieService().get();
+			|| this.sessionStorageService.get()
+			|| this.localStorageService.get()
+			|| this.cookieService.get();
 
 		if (!dci) {
 			return;
 		}
 
-		new CookieService().set(dci);
-		new LocalStorageService().set(dci);
-		new SessionStorageService().set(dci);
+		this.cookieService.set(dci);
+		this.localStorageService.set(dci);
+		this.sessionStorageService.set(dci);
 	}
 }
