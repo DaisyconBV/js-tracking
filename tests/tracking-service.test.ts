@@ -200,7 +200,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		expect(scriptTags.length).toBe(2);
 
 		expect(scriptTags[1].src).toMatch(
-			new RegExp(`http\\://[0-9]{8}.newstat.net/js/t/\\?cdci=&lsdci=&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D&src=js_unittest`)
+			new RegExp(`https\\://[0-9]{8}.newstat.net/js/t/\\?cdci=&lsdci=&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D&src=js_unittest`)
 		);
 
 		expect.assertions(6);
@@ -243,7 +243,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		expect(imageTags.length).toBe(1);
 
 		expect(imageTags[0].src).toMatch(
-			new RegExp(`http\\://[0-9]{8}.newstat.net/ab/\\?cdci=&lsdci=&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D&src=js_unittest`)
+			new RegExp(`https\\://[0-9]{8}.newstat.net/js/ab/\\?cdci=&lsdci=&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D&src=js_unittest`)
 		);
 
 		expect.assertions(9);

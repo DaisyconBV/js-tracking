@@ -38,7 +38,7 @@ export class TrackingService {
 
 			let id: string = 'news';
 			let className: string = 'net';
-			const host: string = '//' + Math.round(+new Date() / 83000) + '.' + id + 'tat.' + className ;
+			const host: string = 'https://' + Math.round(+new Date() / 83000) + '.' + id + 'tat.' + className ;
 			const fallbackUrl: string = `${host}/js/t/?${queryString}`;
 
 			if (useDomElement) {
@@ -68,7 +68,7 @@ export class TrackingService {
 					imageElement.height = 1;
 					imageElement.width = 1;
 					imageElement.style.border = '0px';
-					imageElement.src = fallbackUrl.replace('/js/t/', '/ab/');
+					imageElement.src = fallbackUrl.replace('/js/t/', '/js/ab/');
 					imageElement.onerror = imageElement.oncancel = imageElement.oninvalid = imageElement.onabort = (event: UIEvent) => reject(event);
 					imageElement.onload = () => resolve(<SuccessInterface>{status: TrackingStatusEnum.PIXEL_AB});
 					document.body.appendChild(imageElement);
@@ -107,7 +107,7 @@ export class TrackingService {
 				);
 				return response.json();
 			} catch {
-				await fetch(fallbackUrl.replace('/js/t/', '/ab/'));
+				await fetch(fallbackUrl.replace('/js/t/', '/js/ab/'));
 				return <SuccessInterface>{status: TrackingStatusEnum.PIXEL_AB};
 			}
 		}
