@@ -70,7 +70,7 @@ describe('TrackingService: RegisterTransaction', () => {
 
 		expect(scriptTags.length).toBe(1);
 
-		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?cdci=&lsdci=&${expectedTransactionUrl}&src=js_unittest`);
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?src=js_unittest&${expectedTransactionUrl}`);
 
 		expect.assertions(5);
 
@@ -79,9 +79,10 @@ describe('TrackingService: RegisterTransaction', () => {
 	});
 
 	it('Should register transaction with DCI from session', () => {
-		sessionStorage.setItem(config.storageName, 'SessionDCI');
-		localStorage.setItem(config.storageName, 'LocalStorageDCI');
-		new CookieService().set('CookieDCI');
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('dci')).storageName;
+		sessionStorage.setItem(storageParamName, 'SessionDCI');
+		localStorage.setItem(storageParamName, 'LocalStorageDCI');
+		new CookieService().set(storageParamName, 'CookieDCI');
 
 		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
 		expect(scriptTags.length).toBe(0);
@@ -103,7 +104,84 @@ describe('TrackingService: RegisterTransaction', () => {
 
 		expect(scriptTags.length).toBe(1);
 
-		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?cdci=CookieDCI&lsdci=SessionDCI&${expectedTransactionUrl}&src=js_unittest`);
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?src=js_unittest&cdci=CookieDCI&lsdci=SessionDCI&${expectedTransactionUrl}`);
+
+		expect.assertions(5);
+
+		scriptTags[0].onload(new Event('success'));
+		return promise;
+	});
+
+	it('Should register transaction with gclid from session', () => {
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('gclid')).storageName;
+		sessionStorage.setItem(storageParamName, 'SessionGclid');
+		localStorage.setItem(storageParamName, 'LocalStorageGclid');
+		new CookieService().set(storageParamName, 'CookieGclid');
+
+		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
+		expect(scriptTags.length).toBe(0);
+
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
+		const transaction: Transaction = new Transaction({
+			campaignId: 475,
+			transactionId: 123
+		})
+			.addPart(new Part({amount: 1}))
+			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'EUR'}))
+			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'DKK'}));
+		expect(transaction.toQueryString()).toBe(expectedTransactionUrl);
+
+		const promise: Promise<any> = new TrackingService('my-tracking-domain.com')
+			.registerTransaction(transaction);
+
+		expect(promise).resolves.toBe(global['__dc_response']);
+
+		expect(scriptTags.length).toBe(1);
+
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?src=js_unittest&gclid=SessionGclid&${expectedTransactionUrl}`);
+
+		expect.assertions(5);
+
+		scriptTags[0].onload(new Event('success'));
+		return promise;
+	});
+
+	it('Should register transaction with gclid and DCI from session', () => {
+		const dciStorageParamName: string = config.storageParams.find((entry) => entry.names.includes('dci')).storageName;
+		sessionStorage.setItem(dciStorageParamName, 'SessionDCI');
+		localStorage.setItem(dciStorageParamName, 'LocalStorageDCI');
+		new CookieService().set(dciStorageParamName, 'CookieDCI');
+
+		const cookie: string = document.cookie;
+
+		const gclidStorageParamName: string = config.storageParams.find((entry) => entry.names.includes('gclid')).storageName;
+		sessionStorage.setItem(gclidStorageParamName, 'SessionGclid');
+		localStorage.setItem(gclidStorageParamName, 'LocalStorageGclid');
+		new CookieService().set(gclidStorageParamName, 'CookieGclid');
+
+		document.cookie = cookie + document.cookie
+
+		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
+		expect(scriptTags.length).toBe(0);
+
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
+		const transaction: Transaction = new Transaction({
+			campaignId: 475,
+			transactionId: 123
+		})
+			.addPart(new Part({amount: 1}))
+			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'EUR'}))
+			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'DKK'}));
+		expect(transaction.toQueryString()).toBe(expectedTransactionUrl);
+
+		const promise: Promise<any> = new TrackingService('my-tracking-domain.com')
+			.registerTransaction(transaction);
+
+		expect(promise).resolves.toBe(global['__dc_response']);
+
+		expect(scriptTags.length).toBe(1);
+
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?src=js_unittest&cdci=CookieDCI&lsdci=SessionDCI&gclid=SessionGclid&${expectedTransactionUrl}`);
 
 		expect.assertions(5);
 
@@ -112,8 +190,9 @@ describe('TrackingService: RegisterTransaction', () => {
 	});
 
 	it('Should register transaction with DCI from localStorage', () => {
-		localStorage.setItem(config.storageName, 'LocalStorageDCI');
-		new CookieService().set('CookieDCI');
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('dci')).storageName;
+		localStorage.setItem(storageParamName, 'LocalStorageDCI');
+		new CookieService().set(storageParamName, 'CookieDCI');
 
 		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
 		expect(scriptTags.length).toBe(0);
@@ -135,7 +214,40 @@ describe('TrackingService: RegisterTransaction', () => {
 
 		expect(scriptTags.length).toBe(1);
 
-		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?cdci=CookieDCI&lsdci=LocalStorageDCI&${expectedTransactionUrl}&src=js_unittest`);
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?src=js_unittest&cdci=CookieDCI&lsdci=LocalStorageDCI&${expectedTransactionUrl}`);
+
+		expect.assertions(5);
+
+		scriptTags[0].onload(new Event('success'));
+		return promise;
+	});
+
+	it('Should register transaction with gclid from localStorage', () => {
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('gclid')).storageName;
+		localStorage.setItem(storageParamName, 'LocalStorageGclId');
+		new CookieService().set(storageParamName, 'CookieGclid');
+
+		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
+		expect(scriptTags.length).toBe(0);
+
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
+		const transaction: Transaction = new Transaction({
+			campaignId: 475,
+			transactionId: 123
+		})
+			.addPart(new Part({amount: 1}))
+			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'EUR'}))
+			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'DKK'}));
+		expect(transaction.toQueryString()).toBe(expectedTransactionUrl);
+
+		const promise: Promise<any> = new TrackingService('my-tracking-domain.com')
+			.registerTransaction(transaction);
+
+		expect(promise).resolves.toBe(global['__dc_response']);
+
+		expect(scriptTags.length).toBe(1);
+
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?src=js_unittest&gclid=LocalStorageGclId&${expectedTransactionUrl}`);
 
 		expect.assertions(5);
 
@@ -144,7 +256,8 @@ describe('TrackingService: RegisterTransaction', () => {
 	});
 
 	it('Should register transaction with DCI from cookie', () => {
-		new CookieService().set('CookieDCI');
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('dci')).storageName;
+		new CookieService().set(storageParamName, 'CookieDCI');
 
 		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
 		expect(scriptTags.length).toBe(0);
@@ -166,7 +279,39 @@ describe('TrackingService: RegisterTransaction', () => {
 
 		expect(scriptTags.length).toBe(1);
 
-		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?cdci=CookieDCI&lsdci=&${expectedTransactionUrl}&src=js_unittest`);
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?src=js_unittest&cdci=CookieDCI&${expectedTransactionUrl}`);
+
+		expect.assertions(5);
+
+		scriptTags[0].onload(new Event('success'));
+		return promise;
+	});
+
+	it('Should register transaction with gclid from cookie', () => {
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('gclid')).storageName;
+		new CookieService().set(storageParamName, 'CookieGclid');
+
+		const scriptTags: HTMLCollectionOf<HTMLScriptElement> = document.head.getElementsByTagName('script');
+		expect(scriptTags.length).toBe(0);
+
+		const expectedTransactionUrl: string = 'ci=475&np=3&ti=123&p[]=%7Ba%3A1%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p[]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D';
+		const transaction: Transaction = new Transaction({
+			campaignId: 475,
+			transactionId: 123
+		})
+			.addPart(new Part({amount: 1}))
+			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'EUR'}))
+			.addPart(new Part({amount: 9.95, currency: <CurrencyEnum>'DKK'}));
+		expect(transaction.toQueryString()).toBe(expectedTransactionUrl);
+
+		const promise: Promise<any> = new TrackingService('my-tracking-domain.com')
+			.registerTransaction(transaction);
+
+		expect(promise).resolves.toBe(global['__dc_response']);
+
+		expect(scriptTags.length).toBe(1);
+
+		expect(scriptTags[0].src).toBe(`https://my-tracking-domain.com/js/t/?src=js_unittest&gclid=CookieGclid&${expectedTransactionUrl}`);
 
 		expect.assertions(5);
 
@@ -200,7 +345,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		expect(scriptTags.length).toBe(2);
 
 		expect(scriptTags[1].src).toMatch(
-			new RegExp(`https\\://[0-9]{8}.newstat.net/js/t/\\?cdci=&lsdci=&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D&src=js_unittest`)
+			new RegExp(`https\\://[0-9]{8}.newstat.net/js/t/\\?src=js_unittest&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D`)
 		);
 
 		expect.assertions(6);
@@ -243,7 +388,7 @@ describe('TrackingService: RegisterTransaction', () => {
 		expect(imageTags.length).toBe(1);
 
 		expect(imageTags[0].src).toMatch(
-			new RegExp(`https\\://[0-9]{8}.newstat.net/js/ab/\\?cdci=&lsdci=&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D&src=js_unittest`)
+			new RegExp(`https\\://[0-9]{8}.newstat.net/js/ab/\\?src=js_unittest&ci=475&np=3&ti=123&p\\[\\]=%7Ba%3A1%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3AEUR%7D&p\\[\\]=%7Ba%3A9.95%7D%7Bcur%3ADKK%7D`)
 		);
 
 		expect.assertions(9);
@@ -285,9 +430,11 @@ describe('TrackingService: Store data', () => {
 	});
 
 	it('Should not do anything if no dci exists', () => {
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('dci')).storageName;
+
 		expect(document.cookie).toBe('');
-		expect(sessionStorage.getItem(config.storageName)).toBe(null);
-		expect(localStorage.getItem(config.storageName)).toBe(null);
+		expect(sessionStorage.getItem(storageParamName)).toBe(null);
+		expect(localStorage.getItem(storageParamName)).toBe(null);
 
 		dom.reconfigure({url: 'https://www.example.com/?dci='})
 
@@ -295,15 +442,16 @@ describe('TrackingService: Store data', () => {
 			.storeData();
 
 		expect(document.cookie).toBe('');
-		expect(sessionStorage.getItem(config.storageName)).toBe(null);
-		expect(localStorage.getItem(config.storageName)).toBe(null);
+		expect(sessionStorage.getItem(storageParamName)).toBe(null);
+		expect(localStorage.getItem(storageParamName)).toBe(null);
 	})
 
 	it('Should retrieve the dci from the URL and store it', () => {
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('dci')).storageName;
 
 		expect(document.cookie).toBe('');
-		expect(sessionStorage.getItem(config.storageName)).toBe(null);
-		expect(localStorage.getItem(config.storageName)).toBe(null);
+		expect(sessionStorage.getItem(storageParamName)).toBe(null);
+		expect(localStorage.getItem(storageParamName)).toBe(null);
 
 		dom.reconfigure({url: 'https://www.example.com/?dci=ABCDEFGHIJKLM'})
 
@@ -313,15 +461,17 @@ describe('TrackingService: Store data', () => {
 		expect(document.cookie).toMatch(
 			new RegExp(`dci=ABCDEFGHIJKLM; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
 		);
-		expect(sessionStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
-		expect(localStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
+		expect(sessionStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
+		expect(localStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
 
 	});
 
 	it('Should remain previous value if not set or empty', () => {
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('dci')).storageName;
+
 		expect(document.cookie).toBe('');
-		expect(sessionStorage.getItem(config.storageName)).toBe(null);
-		expect(localStorage.getItem(config.storageName)).toBe(null);
+		expect(sessionStorage.getItem(storageParamName)).toBe(null);
+		expect(localStorage.getItem(storageParamName)).toBe(null);
 
 		dom.reconfigure({url: 'https://www.example.com/?dci=ABCDEFGHIJKLM'})
 
@@ -331,8 +481,8 @@ describe('TrackingService: Store data', () => {
 		expect(document.cookie).toMatch(
 			new RegExp(`dci=ABCDEFGHIJKLM; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
 		);
-		expect(sessionStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
-		expect(localStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
+		expect(sessionStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
+		expect(localStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
 
 		dom.reconfigure({url: 'https://www.example.com/'})
 
@@ -342,8 +492,8 @@ describe('TrackingService: Store data', () => {
 		expect(document.cookie).toMatch(
 			new RegExp(`dci=ABCDEFGHIJKLM; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
 		);
-		expect(sessionStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
-		expect(localStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
+		expect(sessionStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
+		expect(localStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
 
 		dom.reconfigure({url: 'https://www.example.com/?dci='})
 
@@ -353,14 +503,16 @@ describe('TrackingService: Store data', () => {
 		expect(document.cookie).toMatch(
 			new RegExp(`dci=ABCDEFGHIJKLM; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
 		);
-		expect(sessionStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
-		expect(localStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
+		expect(sessionStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
+		expect(localStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
 	});
 
 	it('Should remain be overwritten if changed', () => {
+		const storageParamName: string = config.storageParams.find((entry) => entry.names.includes('dci')).storageName;
+
 		expect(document.cookie).toBe('');
-		expect(sessionStorage.getItem(config.storageName)).toBe(null);
-		expect(localStorage.getItem(config.storageName)).toBe(null);
+		expect(sessionStorage.getItem(storageParamName)).toBe(null);
+		expect(localStorage.getItem(storageParamName)).toBe(null);
 
 		dom.reconfigure({url: 'https://www.example.com/?dci=ABCDEFGHIJKLM'})
 
@@ -370,8 +522,8 @@ describe('TrackingService: Store data', () => {
 		expect(document.cookie).toMatch(
 			new RegExp(`dci=ABCDEFGHIJKLM; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
 		);
-		expect(sessionStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
-		expect(localStorage.getItem(config.storageName)).toBe('ABCDEFGHIJKLM');
+		expect(sessionStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
+		expect(localStorage.getItem(storageParamName)).toBe('ABCDEFGHIJKLM');
 
 		dom.reconfigure({url: 'https://www.example.com/?dci=QRYZ'})
 
@@ -381,7 +533,64 @@ describe('TrackingService: Store data', () => {
 		expect(document.cookie).toMatch(
 			new RegExp(`dci=QRYZ; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
 		);
-		expect(sessionStorage.getItem(config.storageName)).toBe('QRYZ');
-		expect(localStorage.getItem(config.storageName)).toBe('QRYZ');
+		expect(sessionStorage.getItem(storageParamName)).toBe('QRYZ');
+		expect(localStorage.getItem(storageParamName)).toBe('QRYZ');
+	});
+
+	it('Should store data from the config if utm_source = daisycon case insensitive', () => {
+		expect(document.cookie).toBe('');
+		config.storageParams.forEach((param) => {
+			expect(sessionStorage.getItem(param.storageName)).toBe(null);
+			expect(localStorage.getItem(param.storageName)).toBe(null);
+		});
+
+		dom.reconfigure({url: 'https://www.example.com/?uTm_SoUrCe=DaIsYcOn&gclid=somethingsomething'})
+
+		new TrackingService()
+			.storeData();
+
+		expect(document.cookie).toMatch(
+			new RegExp(`gclid=somethingsomething; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
+		);
+		expect(sessionStorage.getItem('gclid')).toBe('somethingsomething');
+		expect(localStorage.getItem('gclid')).toBe('somethingsomething');
+	});
+
+	it('Should store data from the config if dci is set regardless of value', () => {
+		expect(document.cookie).toBe('');
+		config.storageParams.forEach((param) => {
+			expect(sessionStorage.getItem(param.storageName)).toBe(null);
+			expect(localStorage.getItem(param.storageName)).toBe(null);
+		});
+
+		dom.reconfigure({url: 'https://www.example.com/?dCI=SomeRandomDci&gclid=somethingElse'})
+
+		new TrackingService()
+			.storeData();
+
+		expect(document.cookie).toMatch(
+			new RegExp(`gclid=somethingElse; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
+		);
+		expect(sessionStorage.getItem('gclid')).toBe('somethingElse');
+		expect(localStorage.getItem('gclid')).toBe('somethingElse');
+	});
+
+	it('Should not store data if utm_source != daisycon and DCI is not present', () => {
+		expect(document.cookie).toBe('');
+		config.storageParams.forEach((param) => {
+			expect(sessionStorage.getItem(param.storageName)).toBe(null);
+			expect(localStorage.getItem(param.storageName)).toBe(null);
+		});
+
+		dom.reconfigure({url: 'https://www.example.com/?gclid=somethingElse'})
+
+		new TrackingService()
+			.storeData();
+
+		expect(document.cookie).toBe('');
+		config.storageParams.forEach((param) => {
+			expect(sessionStorage.getItem(param.storageName)).toBe(null);
+			expect(localStorage.getItem(param.storageName)).toBe(null);
+		});
 	});
 });

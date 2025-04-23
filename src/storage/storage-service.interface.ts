@@ -1,4 +1,4 @@
 export interface StorageServiceInterface {
-	get(): string;
-	set(dci: string): void;
+	get(name: string): string;
+	set(name: string, value: string): void;
 }

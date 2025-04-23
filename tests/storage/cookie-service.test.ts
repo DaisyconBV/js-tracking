@@ -9,11 +9,12 @@ describe('Storage: CookieService', () => {
 	});
 
 	it('Should set and read the cookie', () => {
+		const uniqueName: string = 'some-test-name-95235';
 		const cookieService: CookieService = new CookieService();
-		expect(cookieService.get()).toBe(null);
+		expect(cookieService.get(uniqueName)).toBe(null);
 
 		const hash: string = 'jhsdfksd6f6734j8';
-		cookieService.set(hash)
-		expect(cookieService.get()).toBe(hash);
+		cookieService.set(uniqueName, hash)
+		expect(cookieService.get(uniqueName)).toBe(hash);
 	});
 });

@@ -1,7 +1,9 @@
+import {AllowanceParamInterface} from 'src/allowance-param.interface';
 import {config} from 'src/config';
 import {Transaction} from 'src/models/transaction';
 import {SuccessInterface} from 'src/response/success.interface';
 import {TrackingStatusEnum} from 'src/response/tracking-status.enum';
+import {StorageParamInterface} from 'src/storage-param.interface';
 import {CookieService} from 'src/storage/cookie.service';
 import {LocalStorageService} from 'src/storage/local-storage.service';
 import {SessionStorageService} from 'src/storage/session-storage.service';
@@ -25,15 +27,24 @@ export class TrackingService {
 				throw new Error('Invalid campaign ID');
 			}
 
-			// Cast to object for compiled minified version where people can't create object themselves.
+			// Cast to object for a compiled minified version where people can't create the object themselves.
 			transaction = new Transaction(transaction);
+			const params: URLSearchParams = new URLSearchParams({
+				src: this.src || config.version
+			});
+			config.storageParams.forEach((storageParam: StorageParamInterface) => {
+				const cookieValue: string = this.cookieService.get(storageParam.storageName) || '';
+				if (cookieValue) {
+					params.set(storageParam.dcCookieName, cookieValue);
+				}
 
-			const cookieValue: string = this.cookieService.get() || '';
-			const storageValue: string = this.sessionStorageService.get() || this.localStorageService.get() || '';
-			const queryString: string = `cdci=${encodeURIComponent(cookieValue)}`
-				+ `&lsdci=${encodeURIComponent(storageValue)}`
-				+ `&${transaction.toQueryString()}`
-				+ `&src=${encodeURIComponent(this.src ? this.src : config.version)}`;
+				const storageValue: string = this.sessionStorageService.get(storageParam.storageName) || this.localStorageService.get(storageParam.storageName) || '';
+				if (storageValue) {
+					params.set(storageParam.dcStorageName, storageValue);
+				}
+			});
+
+			const queryString: string = params.toString() + `&${transaction.toQueryString()}`;
 			const url: string = `https://${this.trackingSegment}/js/t/?${queryString}`;
 
 			let id: string = 'news';
@@ -114,18 +125,35 @@ export class TrackingService {
 	}
 
 	public storeData(fromUrl: string = null): void {
-		let location: URL = new URL(fromUrl || document.location.toString());
-		let dci: string = location.searchParams.get(config.param)
-			|| this.sessionStorageService.get()
-			|| this.localStorageService.get()
-			|| this.cookieService.get();
+		let lowerCaseLocation: URL = new URL((fromUrl || document.location.toString()).toLowerCase());
+		const allowed: boolean = config.storageAllowanceParams.reduce(
+			(accumulatedAllowed: boolean, param: AllowanceParamInterface) => accumulatedAllowed
+				|| (
+					param.value
+						? lowerCaseLocation.searchParams.get(param.name) === param.value.toLowerCase()
+						: lowerCaseLocation.searchParams.has(param.name.toLowerCase())
+	),
+			false
+		);
 
-		if (!dci) {
+		if (!allowed) {
 			return;
 		}
 
-		this.cookieService.set(dci);
-		this.localStorageService.set(dci);
-		this.sessionStorageService.set(dci);
+		let location: URL = new URL(fromUrl || document.location.toString());
+		config.storageParams.forEach((storageParam: StorageParamInterface) => {
+			let value: string = storageParam.names.reduce((accumulatedValue: string, name: string) => accumulatedValue || location.searchParams.get(name), null)
+				|| this.sessionStorageService.get(storageParam.storageName)
+				|| this.localStorageService.get(storageParam.storageName)
+				|| this.cookieService.get(storageParam.storageName);
+
+			if (!value) {
+				return;
+			}
+
+			this.cookieService.set(storageParam.storageName, value);
+			this.localStorageService.set(storageParam.storageName, value);
+			this.sessionStorageService.set(storageParam.storageName, value);
+		});
 	}
 }
