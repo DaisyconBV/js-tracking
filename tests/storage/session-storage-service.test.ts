@@ -10,11 +10,12 @@ describe('Storage: SessionStorage', () => {
 	});
 
 	it('Should set and read the sessionStorage', () => {
+		const uniqueName: string = 'some-test-name-124784';
 		const storageService: SessionStorageService = new SessionStorageService();
-		expect(storageService.get()).toBe(null);
+		expect(storageService.get(uniqueName)).toBe(null);
 
 		const hash: string = 'jhsdfksd6f6734j8';
-		storageService.set(hash)
-		expect(storageService.get()).toBe(hash);
+		storageService.set(uniqueName, hash)
+		expect(storageService.get(uniqueName)).toBe(hash);
 	});
 });
