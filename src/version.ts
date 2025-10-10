@@ -1,1 +1,1 @@
-export const LIB_VERSION: string = '1.1.3';
+export const LIB_VERSION: string = '1.2.1';
