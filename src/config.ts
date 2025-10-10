@@ -6,7 +6,7 @@ export const config: ConfigInterface = {
 	storageAllowanceParams: [{name: 'utm_source', value: 'daisycon'}, {name: 'dci', value: null}],
 	storageParams: [
 		{names: ['dci'], storageName: 'dci', dcCookieName: 'cdci', dcStorageName: 'lsdci'},
-		{names: ['gclid'], storageName: 'gclid', dcCookieName: 'gclid', dcStorageName: 'gclid'},
+		{names: ['gclid'], storageName: 'dcgclid', dcCookieName: 'gclid', dcStorageName: 'gclid'},
 	],
 	ttl: 31622400000,
 	version: 'js_' + LIB_VERSION
