@@ -552,8 +552,8 @@ describe('TrackingService: Store data', () => {
 		expect(document.cookie).toMatch(
 			new RegExp(`gclid=somethingsomething; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
 		);
-		expect(sessionStorage.getItem('gclid')).toBe('somethingsomething');
-		expect(localStorage.getItem('gclid')).toBe('somethingsomething');
+		expect(sessionStorage.getItem('dcgclid')).toBe('somethingsomething');
+		expect(localStorage.getItem('dcgclid')).toBe('somethingsomething');
 	});
 
 	it('Should store data from the config if dci is set regardless of value', () => {
@@ -569,10 +569,10 @@ describe('TrackingService: Store data', () => {
 			.storeData();
 
 		expect(document.cookie).toMatch(
-			new RegExp(`gclid=somethingElse; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
+			new RegExp(`dcgclid=somethingElse; expires=${dateString}; path=/; domain=example.com; SameSite=Strict; Secure;`)
 		);
-		expect(sessionStorage.getItem('gclid')).toBe('somethingElse');
-		expect(localStorage.getItem('gclid')).toBe('somethingElse');
+		expect(sessionStorage.getItem('dcgclid')).toBe('somethingElse');
+		expect(localStorage.getItem('dcgclid')).toBe('somethingElse');
 	});
 
 	it('Should not store data if utm_source != daisycon and DCI is not present', () => {
